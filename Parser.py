@@ -107,7 +107,6 @@ class Parser:
                 token_pointer = self.simple_exp(token_pointer + 1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
                 new_current_node = temp_node
-                current_node.listofchild.append(new_current_node.listofchild[0])
 
                 #comparison_op_node = Node()
                 #comparison_op_node.name = 'op'
@@ -118,6 +117,7 @@ class Parser:
                 #token_pointer = self.simple_exp(token_pointer+1, comparison_op_node)
                 #del current_node.listofchild[-1]
                 #current_node.listofchild.append(comparison_op_node)
+        current_node.listofchild.append(new_current_node.listofchild[0])
         return token_pointer
 
 
@@ -134,9 +134,9 @@ class Parser:
                 token_pointer = self.term(token_pointer+1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
                 new_current_node=temp_node
-                current_node.listofchild.append(new_current_node.listofchild[0])
             else :
                 break
+        current_node.listofchild.append(new_current_node.listofchild[0])
         return token_pointer
 
     def term(self, token_pointer, current_node):
@@ -152,9 +152,10 @@ class Parser:
                 token_pointer = self.factor(token_pointer + 1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
                 new_current_node = temp_node
-                current_node.listofchild.append(new_current_node.listofchild[0])
             else :
                 break
+        current_node.listofchild.append(new_current_node.listofchild[0])
+
         return token_pointer
 
     def factor(self, token_pointer, current_node):
