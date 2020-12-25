@@ -37,6 +37,7 @@ for i in temp_array :
     token_input.append([temp_array2[0].strip(),temp_array2[1].strip()])
 
 def stmt_seq(token_pointer,current_node) :
+    # add to listofattachedchild to the current node 
     token_pointer= statement(token_pointer,current_node)
     while token_pointer<len(token_input) :
         if token_input[token_pointer][1] == 'SEMICOLON' :
