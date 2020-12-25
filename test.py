@@ -1,1 +1,38 @@
-print('3omda is here ')
+token_input_string='''read,READ
+x,IDENTIFIER
+;,SEMICOLON 
+if,IF
+0,NUMBER
+<,LESSTHAN
+x,IDENTIFIER
+then,THEN 
+fact,IDENTIFIER
+:=,ASSIGN
+1,NUMBER
+;,SEMICOLON 
+repeat,REPEAT
+fact,IDENTIFIER
+:=,ASSIGN
+fact,IDENTIFIER
+*,MULT
+x,IDENTIFIER
+;,SEMICOLON 
+x,IDENTIFIER
+:=,ASSIGN
+x,IDENTIFIER
+-,MINUS
+1,NUMBER
+until,UNTIL 
+x,IDENTIFIER
+=,EQUAL
+0,NUMBER
+;,SEMICOLON 
+write,WRITE
+fact,IDENTIFIER
+end,END'''
+temp_array=token_input_string.split('\n')
+token_input=[]
+for i in temp_array :
+    temp_array2=i.split(',')
+    token_input.append([temp_array2[0].strip(),temp_array2[1].strip()])
+
