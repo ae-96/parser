@@ -93,19 +93,31 @@ class Parser:
         return token_pointer
 
     def exp(self, token_pointer, current_node):
-        temp_token_pointer = token_pointer
-        token_pointer = self.simple_exp(token_pointer, current_node)
+        new_current_node = Node()
+        token_pointer = self.simple_exp(token_pointer, new_current_node)
+        #temp_token_pointer = token_pointer
+        #token_pointer = self.simple_exp(token_pointer, current_node)
         if token_pointer < len(self.token_input):
             if (self.token_input[token_pointer][1] == 'LESSTHAN' or self.token_input[token_pointer][1] == 'EQUAL' ):
-                comparison_op_node = Node()
-                comparison_op_node.name = 'op'
-                comparison_op_node.shape = 'oval'
+                temp_node = Node()
+                new_current_node.name = 'op'
+                new_current_node.shape = 'oval'
                 # lazm ykon fe < or = hena ya kalbob
-                comparison_op_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
-                token_pointer = self.simple_exp(temp_token_pointer, comparison_op_node)
-                token_pointer = self.simple_exp(token_pointer+1, comparison_op_node)
-                del current_node.listofchild[-1]
-                current_node.listofchild.append(comparison_op_node)
+                new_current_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
+                token_pointer = self.simple_exp(token_pointer + 1, new_current_node)
+                temp_node.listofchild.append(new_current_node)
+                new_current_node = temp_node
+                current_node.listofchild.append(new_current_node.listofchild[0])
+
+                #comparison_op_node = Node()
+                #comparison_op_node.name = 'op'
+                #comparison_op_node.shape = 'oval'
+                # lazm ykon fe < or = hena ya kalbob
+                #comparison_op_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
+                #token_pointer = self.simple_exp(temp_token_pointer, comparison_op_node)
+                #token_pointer = self.simple_exp(token_pointer+1, comparison_op_node)
+                #del current_node.listofchild[-1]
+                #current_node.listofchild.append(comparison_op_node)
         return token_pointer
 
 
