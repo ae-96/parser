@@ -41,14 +41,14 @@ class Parser:
         if_node.name = 'if'
         if_node.shape = 'rect'
         if_node.attachto = attachto
-        token_pointer = self.exp(token_pointer, if_node, 'parent')
+        token_pointer = self.exp(token_pointer+1, if_node, 'parent')
         # lazm ykon fe then hena
         token_pointer = self.stmt_seq(token_pointer + 1, if_node)
         if self.token_input[token_pointer][1] == 'ELSE':
             token_pointer = self.stmt_seq(token_pointer + 1, if_node)
         # lazm ykon fe end hena
         token_pointer = token_pointer + 1
-        current_node.listofattachedchild.append(if_node)
+        current_node.listofchild.append(if_node)
         return token_pointer
 
     def read_statement(self, token_pointer, current_node, attachto):
