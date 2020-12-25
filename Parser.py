@@ -23,6 +23,14 @@ class Parser:
         while token_pointer < len(self.token_input):
             if self.token_input[token_pointer][1] == 'SEMICOLON':
                 token_pointer = self.statement(token_pointer + 1, current_node)
+
+            # bug 3omdaaaaaaaaaaaaaaaaa
+            # 2l72ona ya naaaaaaaaaas
+            # 2tfrgo 3la el beeeeh
+            # de 3'lta y3mlha 3ayel so3'ayar ?
+            # 3eeeb walahy
+            else:
+                break
         return token_pointer
 
     def statement(self, token_pointer, current_node):
@@ -50,6 +58,7 @@ class Parser:
         # lazm ykon fe end hena
         token_pointer = token_pointer + 1
         current_node.listofchild.append(if_node)
+
         return token_pointer
 
     def read_statement(self, token_pointer, current_node):
@@ -189,5 +198,5 @@ class Parser:
     def show_subtree(self,start_root):
         print (start_root.name+'\n'+start_root.value+'\n'+start_root.shape+'\n')
         for i in start_root.listofchild:
-            self.show_tree(i)
+            self.show_subtree(i)
 
