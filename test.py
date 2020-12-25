@@ -36,3 +36,23 @@ for i in temp_array :
     temp_array2=i.split(',')
     token_input.append([temp_array2[0].strip(),temp_array2[1].strip()])
 
+def stmt_seq(token_pointer,current_level) :
+    token_pointer= statement(token_pointer,current_level)
+    while token_pointer<len(token_input) :
+        if token_input[token_pointer][1] == 'SEMICOLON' :
+            token_pointer= statement(token_pointer+1,current_level)
+    return token_pointer
+
+def statement(token_pointer,current_level) :
+    if token_input[token_pointer][1] =='IF' : token_pointer= if_statement(token_pointer,current_level)
+    elif token_input[token_pointer][1] =='READ' : token_pointer= read_statement(token_pointer,current_level)
+    elif token_input[token_pointer][1] == 'WRITE': token_pointer= write_statement(token_pointer,current_level)
+    elif token_input[token_pointer][1] == 'IDENTIFIER': token_pointer= assign_statement(token_pointer,current_level)
+    elif token_input[token_pointer][1] == 'REPEAT' : token_pointer= repeat_statement(token_pointer,current_level)
+    return token_pointer
+
+def if_statement(token_pointer,current_level) : pass
+def read_statement(token_pointer,current_level) : pass
+def write_statement(token_pointer,current_level) : pass
+def assign_statement(token_pointer,current_level) : pass
+def repeat_statement(token_pointer,current_level) : pass
