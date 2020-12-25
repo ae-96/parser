@@ -15,6 +15,8 @@ class Parser:
     def __init__(self, input_string):
         self.token_input = set_tokeninput(input_string)
         self.output_tree = Tree()
+    def start_parsing(self):
+        self.stmt_seq(0, self.output_tree.root)
 
     def stmt_seq(self, token_pointer, current_node):
         token_pointer = self.statement(token_pointer, current_node)
@@ -121,11 +123,13 @@ class Parser:
                 temp_node.listofchild.append(new_current_node)
                 new_current_node=temp_node
                 current_node.listofchild.append(new_current_node.listofchild[0])
+            else :
+                break
         return token_pointer
 
     def term(self, token_pointer, current_node):
         new_current_node = Node()
-        token_pointer = self.term(token_pointer, new_current_node)
+        token_pointer = self.factor(token_pointer, new_current_node)
         while token_pointer < len(self.token_input):
             if (self.token_input[token_pointer][1] == 'MULT' or self.token_input[token_pointer][1] == 'DIV'):
                 temp_node = Node()
@@ -133,10 +137,12 @@ class Parser:
                 new_current_node.shape = 'oval'
                 # lazm ykon fe * or / hena ya kalbob
                 new_current_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
-                token_pointer = self.term(token_pointer + 1, new_current_node)
+                token_pointer = self.factor(token_pointer + 1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
                 new_current_node = temp_node
                 current_node.listofchild.append(new_current_node.listofchild[0])
+            else :
+                break
         return token_pointer
 
     def factor(self, token_pointer, current_node):
@@ -164,4 +170,11 @@ class Parser:
             identifier_node.shape = 'oval'
             current_node.listofchild.append(identifier_node)
         return token_pointer+1
+
+    def show_tree(self):
+        self.show_subtree(self.output_tree.root)
+    def show_subtree(self,start_root):
+        print (start_root.name+'\n'+start_root.value+'\n'+start_root.shape+'\n')
+        for i in start_root.listofchild:
+            self.show_tree(i)
 
