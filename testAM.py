@@ -32,6 +32,13 @@ x,IDENTIFIER
 ;,SEMICOLON 
 write,WRITE
 fact,IDENTIFIER
++,PLUS
+1,NUMBER
++,PLUS
+1,NUMBER
 end,END''')
-A.start_parsing()
-A.show_tree()
+if A.check_error()==1:
+    print ('ERROR')
+elif A.check_error()==0:
+    A.start_parsing()
+    A.show_tree()

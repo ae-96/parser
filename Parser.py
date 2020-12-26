@@ -1,5 +1,7 @@
 from tree import Tree
 from node import Node
+from re import *
+
 
 
 def set_tokeninput(token_input_string):
@@ -15,6 +17,38 @@ class Parser:
     def __init__(self, input_string):
         self.token_input = set_tokeninput(input_string)
         self.output_tree = Tree()
+    def check_error(self):
+        tokens = compile(r'[a-z]+|\d+|\+|=|;|:=|\(|\)|<|\*|/|-', IGNORECASE)
+        for i in self.token_input :
+            lexeme = findall(tokens,i[0] )
+            if len(lexeme)==0:
+                return 1
+            if (self.check_syntax(i)==1):
+                return 1
+        return 0
+
+    def check_syntax(self, token):
+        if (token[0]==';' and token[1]=='SEMICOLON'): return 0
+        elif (token[0]=='if' and token[1]=='IF'): return 0
+        elif (token[0]=='else' and token[1]=='ELSE'): return 0
+        elif (token[0]=='then' and token[1]=='THEN'): return 0
+        elif (token[0]=='end' and token[1]=='END'): return 0
+        elif (token[0]=='repeat' and token[1]=='REPEAT'): return 0
+        elif (token[0]=='until' and token[1]=='UNTIL'): return 0
+        elif (token[0]==':=' and token[1]=='ASSIGN'): return 0
+        elif (token[0]=='read' and token[1]=='READ'): return 0
+        elif (token[0]=='write' and token[1]=='WRITE'): return 0
+        elif (token[0]=='<' and token[1]=='LESSTHAN'): return 0
+        elif (token[0]=='=' and token[1]=='EQUAL'): return 0
+        elif (token[0]=='+' and token[1]=='PLUS'): return 0
+        elif (token[0]=='-' and token[1]=='MINUS'): return 0
+        elif (token[0]=='*' and token[1]=='MULT'): return 0
+        elif (token[0]=='/' and token[1]=='DIV'): return 0
+        elif (token[0]=='(' and token[1]=='OPENBRACKET'): return 0
+        elif (token[0]==')' and token[1]=='CLOSEDBRACKET'): return 0
+        elif (token[0].isalpha() and token[1]=='IDENTIFIER'): return 0
+        elif (token[0].isalnum() and token[1]=='NUMBER'): return 0
+        else : return 1
 
     def start_parsing(self):
         self.stmt_seq(0, self.output_tree.root)
