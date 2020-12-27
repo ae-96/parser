@@ -9,7 +9,8 @@ def set_tokeninput(token_input_string):
     token = compile(r'[^,]*,[^,]*')
     for i in temp_array:
         if i.strip() != '':
-            if token.search(i) is None:
+            temp_str= token.search(i)
+            if temp_str is None or temp_str.group() != i:
                 token_input[0][0] = 'not token!'
                 return token_input
             temp_array2 = i.split(',')
@@ -62,7 +63,6 @@ def check_syntax(token):
     else:
         return 1
 
-
 class Parser:
     def __init__(self, input_string):
         self.token_input = set_tokeninput(input_string)
@@ -74,6 +74,8 @@ class Parser:
         for i in self.token_input:
             lexeme = findall(tokens, i[0])
             if len(lexeme) == 0:
+                return 1
+            elif len(lexeme) > 1:
                 return 1
             if check_syntax(i) == 1:
                 return 1

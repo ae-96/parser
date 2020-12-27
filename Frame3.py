@@ -32,7 +32,7 @@ class frame3:
         else:
             if self.pars.start_parsing() == 1:
                 self.discription = self.pars.convert_to_string()
-                # print(self.discription)
+                print(self.discription)
                 ff = open('demo.dot', "w")
                 ff.write(self.pars.convert_to_string())
                 ff.close()
