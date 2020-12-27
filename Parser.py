@@ -9,7 +9,7 @@ def set_tokeninput(token_input_string):
     token = compile(r'[^,]*,[^,]*')
     for i in temp_array:
         if i.strip() != '':
-            temp_str= token.search(i)
+            temp_str = token.search(i)
             if temp_str is None or temp_str.group() != i:
                 token_input[0][0] = 'not token!'
                 return token_input
@@ -63,6 +63,7 @@ def check_syntax(token):
     else:
         return 1
 
+
 class Parser:
     def __init__(self, input_string):
         self.token_input = set_tokeninput(input_string)
@@ -86,7 +87,10 @@ class Parser:
             return 0
         if self.token_input[0][0] == 'not token!':
             return 0
-        token_pointer = self.stmt_seq(0, self.output_tree.root)
+        try:
+            token_pointer = self.stmt_seq(0, self.output_tree.root)
+        except:
+            return 0
         if token_pointer == len(self.token_input):
             return self.tiny
         else:
@@ -96,6 +100,9 @@ class Parser:
         token_pointer = self.statement(token_pointer, current_node)
         while token_pointer < len(self.token_input):
             if self.token_input[token_pointer][1] == 'SEMICOLON':
+                if token_pointer + 1 >= len(self.token_input):
+                    self.tiny = 0
+                    return token_pointer
                 token_pointer = self.statement(token_pointer + 1, current_node)
             else:
                 break
@@ -135,7 +142,7 @@ class Parser:
     def read_statement(self, token_pointer, current_node):
         read_node = Node()
         read_node.name = 'read'
-        if self.token_input[token_pointer+1][1] != 'IDENTIFIER':
+        if self.token_input[token_pointer + 1][1] != 'IDENTIFIER':
             self.tiny = 0
         read_node.value = '(' + str(self.token_input[token_pointer + 1][0]) + ')'
         read_node.shape = 'rectangle'
@@ -155,7 +162,7 @@ class Parser:
         assign_node.name = 'assign'
         assign_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
         assign_node.shape = 'rectangle'
-        if self.token_input[token_pointer+1][1] != 'ASSIGN':
+        if self.token_input[token_pointer + 1][1] != 'ASSIGN':
             self.tiny = 0
         token_pointer = self.exp(token_pointer + 2, assign_node)
         current_node.listofchild.append(assign_node)
