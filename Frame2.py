@@ -2,6 +2,8 @@ from tkinter import *
 import tkinter.messagebox
 from  Frame3 import  frame3
 from  tkinter import  filedialog
+import os.path
+from os import path
 class frame2 :
     def __init__(self,master):
         self.input=""
@@ -29,34 +31,42 @@ class frame2 :
     def Done(self):
 
         self.input = self.text.get("0.0", "end")
-        self.master.pack_forget()
-        self.master.destroy()
-        self.master1.pack_forget()
-        self.master1.destroy()
-        self.master2.pack_forget()
-        self.master2.destroy()
-        self.f = frame3(self.newmaster,self.input)
-        self.f.show_Label(self.input)
+        if self.input == "\n":
+            tkinter.messagebox.showinfo("error", "ERROR:Empty Entry")
+        else :
+            self.master.pack_forget()
+            self.master.destroy()
+            self.master1.pack_forget()
+            self.master1.destroy()
+            self.master2.pack_forget()
+            self.master2.destroy()
+            self.f = frame3(self.newmaster,self.input)
+            self.f.show_Label(self.input)
     def OK(self):
         self.File_Path = self.path_entry.get()
-        print(self.File_Path)
-        if self.File_Path == "":
-            tkinter.messagebox.showinfo("error", "Please Enter file path")
+        condition= path.isfile(self.File_Path)
+        if (condition )==False:
+            tkinter.messagebox.showinfo("error", "Please Enter valid path")
         else:
-            if self.File_Path[-3:] != "txt":
-                tkinter.messagebox.showinfo("error", "Please choose Proper file extension (.txt)")
+            print(self.File_Path)
+            if self.File_Path == "":
+                tkinter.messagebox.showinfo("error", "Please Enter file path")
             else:
-                self.master2.pack_forget()
-                self.master2.destroy()
-                self.master.pack_forget()
-                self.master.destroy()
-                self.master1.pack_forget()
-                self.master1.destroy()
-                ff = open(self.File_Path, "r")
-                contents = ff.read()
-                ff.close()
-                self.f = frame3(self.newmaster,  contents)
-                self.f.show_Label(contents)
+                if self.File_Path[-3:] != "txt":
+                    tkinter.messagebox.showinfo("error", "Please choose Proper file extension (.txt)")
+                else:
+                    self.master2.pack_forget()
+                    self.master2.destroy()
+                    self.master.pack_forget()
+                    self.master.destroy()
+                    self.master1.pack_forget()
+                    self.master1.destroy()
+                    ff = open(self.File_Path, "r",)
+
+                    contents = ff.read()
+                    ff.close()
+                    self.f = frame3(self.newmaster,  contents)
+                    self.f.show_Label(contents)
 
     def browse(self):
         self.File_Path = self.filedialog()
