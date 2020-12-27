@@ -61,6 +61,7 @@ class Parser:
     def __init__(self, input_string):
         self.token_input = set_tokeninput(input_string)
         self.output_tree = Tree()
+        self.tiny = 1
 
     def check_error(self):
         tokens = compile(r'[a-z]+|\d+|\+|=|;|:=|\(|\)|<|\*|/|-', IGNORECASE)
@@ -73,19 +74,17 @@ class Parser:
         return 0
 
     def start_parsing(self):
-        self.stmt_seq(0, self.output_tree.root)
+        token_pointer = self.stmt_seq(0, self.output_tree.root)
+        if token_pointer == len(self.token_input):
+            return self.tiny
+        else:
+            return 0
 
     def stmt_seq(self, token_pointer, current_node):
         token_pointer = self.statement(token_pointer, current_node)
         while token_pointer < len(self.token_input):
             if self.token_input[token_pointer][1] == 'SEMICOLON':
                 token_pointer = self.statement(token_pointer + 1, current_node)
-
-            # bug 3omdaaaaaaaaaaaaaaaaa
-            # 2l72ona ya naaaaaaaaaas
-            # 2tfrgo 3la el beeeeh
-            # de 3'lta y3mlha 3ayel so3'ayar ?
-            # 3eeeb walahy
             else:
                 break
         return token_pointer
@@ -101,6 +100,8 @@ class Parser:
             token_pointer = self.assign_statement(token_pointer, current_node)
         elif self.token_input[token_pointer][1] == 'REPEAT':
             token_pointer = self.repeat_statement(token_pointer, current_node)
+        else:
+            self.tiny = 0
         return token_pointer
 
     def if_statement(self, token_pointer, current_node):
@@ -108,20 +109,22 @@ class Parser:
         if_node.name = 'if'
         if_node.shape = 'rectangle'
         token_pointer = self.exp(token_pointer + 1, if_node)
-        # lazm ykon fe then hena
+        if self.token_input[token_pointer][1] != 'THEN':
+            self.tiny = 0
         token_pointer = self.stmt_seq(token_pointer + 1, if_node)
         if self.token_input[token_pointer][1] == 'ELSE':
             token_pointer = self.stmt_seq(token_pointer + 1, if_node)
-        # lazm ykon fe end hena
+        if self.token_input[token_pointer][1] != 'END':
+            self.tiny = 0
         token_pointer = token_pointer + 1
         current_node.listofchild.append(if_node)
-
         return token_pointer
 
     def read_statement(self, token_pointer, current_node):
         read_node = Node()
         read_node.name = 'read'
-        # lazm ykon fe identifier hena ya kalbob
+        if self.token_input[token_pointer+1][1] != 'IDENTIFIER':
+            self.tiny = 0
         read_node.value = '(' + str(self.token_input[token_pointer + 1][0]) + ')'
         read_node.shape = 'rectangle'
         current_node.listofchild.append(read_node)
@@ -138,10 +141,10 @@ class Parser:
     def assign_statement(self, token_pointer, current_node):
         assign_node = Node()
         assign_node.name = 'assign'
-        # lazm ykon fe identifier hena ya kalbob
         assign_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
         assign_node.shape = 'rectangle'
-        # lazm ykon fe := hena ya kalbob
+        if self.token_input[token_pointer+1][1] != 'ASSIGN':
+            self.tiny = 0
         token_pointer = self.exp(token_pointer + 2, assign_node)
         current_node.listofchild.append(assign_node)
         return token_pointer
@@ -151,7 +154,8 @@ class Parser:
         repeat_node.name = 'repeat'
         repeat_node.shape = 'rectangle'
         token_pointer = self.stmt_seq(token_pointer + 1, repeat_node)
-        # lazm ykon fe until hena ya kalbob
+        if self.token_input[token_pointer][1] != 'UNTIL':
+            self.tiny = 0
         token_pointer = self.exp(token_pointer + 1, repeat_node)
         current_node.listofchild.append(repeat_node)
         return token_pointer
@@ -159,28 +163,15 @@ class Parser:
     def exp(self, token_pointer, current_node):
         new_current_node = Node()
         token_pointer = self.simple_exp(token_pointer, new_current_node)
-        # temp_token_pointer = token_pointer
-        # token_pointer = self.simple_exp(token_pointer, current_node)
         if token_pointer < len(self.token_input):
             if self.token_input[token_pointer][1] == 'LESSTHAN' or self.token_input[token_pointer][1] == 'EQUAL':
                 temp_node = Node()
                 new_current_node.name = 'op'
                 new_current_node.shape = 'oval'
-                # lazm ykon fe < or = hena ya kalbob
                 new_current_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
                 token_pointer = self.simple_exp(token_pointer + 1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
                 new_current_node = temp_node
-
-                # comparison_op_node = Node()
-                # comparison_op_node.name = 'op'
-                # comparison_op_node.shape = 'oval'
-                # lazm ykon fe < or = hena ya kalbob
-                # comparison_op_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
-                # token_pointer = self.simple_exp(temp_token_pointer, comparison_op_node)
-                # token_pointer = self.simple_exp(token_pointer+1, comparison_op_node)
-                # del current_node.listofchild[-1]
-                # current_node.listofchild.append(comparison_op_node)
         current_node.listofchild.append(new_current_node.listofchild[0])
         return token_pointer
 
@@ -192,7 +183,6 @@ class Parser:
                 temp_node = Node()
                 new_current_node.name = 'op'
                 new_current_node.shape = 'oval'
-                # lazm ykon fe + or - hena ya kalbob
                 new_current_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
                 token_pointer = self.term(token_pointer + 1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
@@ -210,7 +200,6 @@ class Parser:
                 temp_node = Node()
                 new_current_node.name = 'op'
                 new_current_node.shape = 'oval'
-                # lazm ykon fe * or / hena ya kalbob
                 new_current_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
                 token_pointer = self.factor(token_pointer + 1, new_current_node)
                 temp_node.listofchild.append(new_current_node)
@@ -224,12 +213,12 @@ class Parser:
     def factor(self, token_pointer, current_node):
         if self.token_input[token_pointer][1] == 'OPENBRACKET':
             bracket_node = Node()
-            # lazm ykon fe ( hena ya kalbob
             bracket_node.name = '('
             bracket_node.shape = 'oval'
             current_node.listofchild.append(bracket_node)
             token_pointer = self.exp(token_pointer + 1, current_node)
-            # lazm ykon fe ) hena ya kalbob
+            if self.token_input[token_pointer][1] != 'CLOSEDBRACKET':
+                self.tiny = 0
             bracket_node.name = ')'
             current_node.listofchild.append(bracket_node)
 
@@ -245,6 +234,8 @@ class Parser:
             identifier_node.value = '(' + str(self.token_input[token_pointer][0]) + ')'
             identifier_node.shape = 'oval'
             current_node.listofchild.append(identifier_node)
+        else:
+            self.tiny = 0
         return token_pointer + 1
 
     def show_tree(self):
@@ -292,8 +283,8 @@ class Parser:
                         node.listofchild[i].index) + ';'
                     relation.append(temp_str)
                     temp_str = 'subgraph subs' + str(nodepointer) + '{\nrank="same"\nnode' + str(
-                        node.listofchild[i].index) + '\nnode' + str(
-                        node.listofchild[i - 1].index) + '\n}'
+                        node.listofchild[i - 1].index) + '\nnode' + str(
+                        node.listofchild[i].index) + '\n}'
                     levels.append(temp_str)
             nodepointer = self.convert_tree(node.listofchild[i], definition, relation, levels, nodepointer,
                                             node.listofchild[i].index, 0)

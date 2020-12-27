@@ -14,7 +14,7 @@ def reset():
     f.destroy()
     f = Frame(root)
     f.pack()
-    i = frame2(f)
+    frame2(f)
 
 
 reset_b = Button(root, text=" Reset ", command=reset, width=5, height=1, font="arial 12 italic")
