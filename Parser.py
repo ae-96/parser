@@ -6,9 +6,15 @@ from re import *
 def set_tokeninput(token_input_string):
     temp_array = token_input_string.split('\n')
     token_input = []
+    token = compile(r'[^,]*,[^,]*')
     for i in temp_array:
-        temp_array2 = i.split(',')
-        token_input.append([temp_array2[0].strip(), temp_array2[1].strip()])
+        if i.strip() != '':
+            if token.search(i) is None:
+                token_input[0][0] = 'not token!'
+                return token_input
+            temp_array2 = i.split(',')
+            token_input.append([temp_array2[0].strip(), temp_array2[1].strip()])
+
     return token_input
 
 
@@ -74,6 +80,10 @@ class Parser:
         return 0
 
     def start_parsing(self):
+        if len(self.token_input) == 0:
+            return 0
+        if self.token_input[0][0] == 'not token!':
+            return 0
         token_pointer = self.stmt_seq(0, self.output_tree.root)
         if token_pointer == len(self.token_input):
             return self.tiny
