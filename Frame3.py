@@ -1,4 +1,7 @@
 from tkinter import *
+from PIL import Image
+from Parser import Parser
+import pydotplus
 import tkinter.messagebox
 from tkinter import filedialog
 import  os
@@ -6,6 +9,7 @@ import  os
 class frame3 :
     def __init__(self,master,contents):
         self.contents = contents
+        self.pars=Parser(self.contents)
         self.main=master
         self.Master = Frame(master)
         self.Master.pack(side=TOP)
@@ -16,11 +20,24 @@ class frame3 :
         self.save = Frame(self.main)
         self.save.pack(side=BOTTOM)
 
-        self.Scan_Button = Button(self.master_will_be_deleted, text=" Scan ", command=self.PrintTree, font="arial 15 italic", width=20)
+        self.Scan_Button = Button(self.master_will_be_deleted, text=" PrintTree ", command=self.PrintTree, font="arial 15 italic", width=20)
         self.Scan_Button.pack(side=BOTTOM)
 
     def PrintTree(self):
-        d=""
+
+        if self.pars.check_error() == 1 :
+            tkinter.messagebox.showinfo("error", "Invalid Tokens ")
+        else :
+            self.pars.start_parsing()
+            self.discription = self.pars.convert_to_string()
+            ff = open( 'demo.dot',"w")
+            ff.write(self.pars.convert_to_string())
+            ff.close()
+            graph_a = pydotplus.graph_from_dot_file('demo.dot')
+            graph_a.write_png('OutputTree.png')
+            os.remove('demo.dot')
+            f = Image.open("OutputTree.png").show()
+
     def show_Label(self,contents=""):
 
         def myfunction(event):
